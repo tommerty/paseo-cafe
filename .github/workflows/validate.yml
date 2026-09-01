@@ -1,0 +1,34 @@
+name: Validate registry
+
+# The whole PR review burden for a plugin submission lives here. A green
+# check means the entry is well-formed and points at a real repo with a
+# real paseo-plugin.json — that's the bar for merging.
+on:
+  pull_request:
+    paths:
+      - "registry/**"
+      - "src/lib/registry-schema.ts"
+      - "scripts/validate-registry.ts"
+      - "scripts/github.ts"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run registry:validate
+        env:
+          # Authenticated requests get a much higher GitHub API rate limit
+          # than the ~60/hour anonymous limit, which matters once the
+          # registry has more than a couple of entries.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

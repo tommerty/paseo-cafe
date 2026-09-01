@@ -1,0 +1,59 @@
+name: Enrich and deploy
+
+# Rebuilds data/plugins.json from every registry/*.json entry (the "plumb
+# for paseo" scan) and builds the site. Runs whenever the registry or app
+# code changes on main, and nightly so stars/last-commit/broken-repo
+# detection stay fresh even without new submissions.
+#
+# The actual GitHub Pages deploy step is intentionally left for later —
+# see the TODO at the bottom of this file.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * *" # nightly re-scan, off the hour to dodge GH Actions load spikes
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enrich-and-deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Scan registry
+        run: bun run registry:scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "paseo-plugins-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "chore: refresh plugin data [skip ci]"
+          git push
+
+      - name: Typecheck & build
+        run: |
+          bun run typecheck
+          bun run build
+
+      # TODO(github-pages): upload the `dist/` (or configured output) folder
+      # as a Pages artifact and deploy it — needs `pages: write` +
+      # `id-token: write` permissions, `actions/configure-pages`,
+      # `actions/upload-pages-artifact`, and `actions/deploy-pages`, plus
+      # deciding the TanStack Start prerender/SPA strategy and base path.
+      # Deliberately deferred; see repo README.

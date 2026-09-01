@@ -1,0 +1,77 @@
+[
+  {
+    "id": "skills",
+    "repo": "gpambrozio/paseo-plugins",
+    "path": "skills",
+    "url": "https://github.com/gpambrozio/paseo-plugins/tree/main/skills",
+    "name": "paseo-skills",
+    "description": "A Paseo plugin that lists the agent skills available to an agent session, shows where each one comes from, renders its `SKILL.md`, and invokes it.",
+    "version": "0.0.0",
+    "license": "MIT",
+    "categories": [
+      "productivity"
+    ],
+    "manifest": {
+      "id": "skills"
+    },
+    "repoMeta": {
+      "stars": 2,
+      "openIssues": 0,
+      "defaultBranch": "main",
+      "pushedAt": "2026-08-31T18:14:36Z",
+      "topics": [],
+      "archived": false,
+      "license": "MIT"
+    },
+    "installNotes": "Requires the [Paseo](https://paseo.sh) CLI and a running daemon.\n\n```bash\npaseo plugin add gpambrozio/paseo-plugins --path skills\n```\n\nThis repository holds two plugins, hence `--path`. The daemon clones it under `$PASEO_HOME/plugins`\nand runs no package manager — the plugin is source only, and everything it imports at runtime the\nhost provides. Pin a release with `--ref <tag>`; later, `paseo plugin status` and\n`paseo plugin update skills` follow the branch.\n\nTo hack on it instead, install from a clone of your own:\n\n```bash\ngit clone https://github.com/gpambrozio/paseo-plugins.git\ncd paseo-plugins/skills\nnpm install\nnpm run typecheck && npm test\npaseo plugin install \"$PWD\"\n```\n\n`install` records the directory, so keep that clone where it is — the daemon loads the plugin from\nthat path every time it starts. `npm install` is for the typecheck and the tests; installing needs\nnone of it.\n\nThe daemon needs `\"pluginsEnabled\": true` in its `config.json`. Run `paseo reload` after changing\nit. Plugin code is trusted and unsandboxed: the server half reads the daemon machine's filesystem\nand the client half runs inside the Paseo app. Read the source before installing this or any other\nplugin.",
+    "installNotesHtml": "<p>Requires the <a href=\"https://paseo.sh\">Paseo</a> CLI and a running daemon.</p>\n<pre><code class=\"language-bash\">paseo plugin add gpambrozio/paseo-plugins --path skills\n</code></pre>\n<p>This repository holds two plugins, hence <code>--path</code>. The daemon clones it under <code>$PASEO_HOME/plugins</code>\nand runs no package manager — the plugin is source only, and everything it imports at runtime the\nhost provides. Pin a release with <code>--ref &#x3C;tag></code>; later, <code>paseo plugin status</code> and\n<code>paseo plugin update skills</code> follow the branch.</p>\n<p>To hack on it instead, install from a clone of your own:</p>\n<pre><code class=\"language-bash\">git clone https://github.com/gpambrozio/paseo-plugins.git\ncd paseo-plugins/skills\nnpm install\nnpm run typecheck &#x26;&#x26; npm test\npaseo plugin install \"$PWD\"\n</code></pre>\n<p><code>install</code> records the directory, so keep that clone where it is — the daemon loads the plugin from\nthat path every time it starts. <code>npm install</code> is for the typecheck and the tests; installing needs\nnone of it.</p>\n<p>The daemon needs <code>\"pluginsEnabled\": true</code> in its <code>config.json</code>. Run <code>paseo reload</code> after changing\nit. Plugin code is trusted and unsandboxed: the server half reads the daemon machine's filesystem\nand the client half runs inside the Paseo app. Read the source before installing this or any other\nplugin.</p>",
+    "health": {
+      "manifestValid": true,
+      "hasReadme": true,
+      "hasLicense": true,
+      "hasTests": true,
+      "hasTypecheckScript": true,
+      "updatedRecently": true
+    },
+    "images": [],
+    "scannedAt": "2026-09-01T13:29:51.189Z"
+  },
+  {
+    "id": "subagent-activity",
+    "repo": "mcowger/paseo-plugins",
+    "path": "subagent-activity",
+    "url": "https://github.com/mcowger/paseo-plugins/tree/main/subagent-activity",
+    "name": "subagent-activity",
+    "description": "This Paseo `v0.7.0-beta.2` plugin adds an agent-scoped activity pane for monitoring managed Paseo descendants and provider-native subagent activity.",
+    "version": "0.0.0",
+    "categories": [
+      "monitoring"
+    ],
+    "manifest": {
+      "id": "subagent-activity"
+    },
+    "repoMeta": {
+      "stars": 0,
+      "openIssues": 0,
+      "defaultBranch": "main",
+      "pushedAt": "2026-08-31T21:03:59Z",
+      "topics": [],
+      "archived": false,
+      "license": null
+    },
+    "installNotes": "The plugin targets Paseo `v0.7.0-beta.2`.\n\n```bash\ncd /absolute/path/to/subagent-activity\nnpm install\npaseo plugin install \"$PWD\"\npaseo plugin reload subagent-activity\n```",
+    "installNotesHtml": "<p>The plugin targets Paseo <code>v0.7.0-beta.2</code>.</p>\n<pre><code class=\"language-bash\">cd /absolute/path/to/subagent-activity\nnpm install\npaseo plugin install \"$PWD\"\npaseo plugin reload subagent-activity\n</code></pre>",
+    "health": {
+      "manifestValid": true,
+      "hasReadme": true,
+      "hasLicense": false,
+      "hasTests": true,
+      "hasTypecheckScript": true,
+      "updatedRecently": true
+    },
+    "images": [
+      "https://raw.githubusercontent.com/mcowger/paseo-plugins/main/subagent-activity/images/subagent-activity.png"
+    ],
+    "scannedAt": "2026-09-01T13:29:50.317Z"
+  }
+]

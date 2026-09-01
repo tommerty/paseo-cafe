@@ -3,6 +3,9 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 
 import appCss from "../styles.css?url"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export const Route = createRootRoute({
   head: () => ({
@@ -15,7 +18,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "paseo-plugins — a directory of paseo.sh plugins",
       },
     ],
     links: [
@@ -36,12 +39,16 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body className="flex min-h-svh flex-col">
+        <ThemeProvider defaultTheme="dark" storageKey="theme">
+          <SiteHeader />
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",
