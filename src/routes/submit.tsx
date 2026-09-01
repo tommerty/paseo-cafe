@@ -11,7 +11,7 @@ import { CopyBlock } from "@/components/copy-block"
 
 export const Route = createFileRoute("/submit")({ component: SubmitPage })
 
-const REPO = "paseo-plugins/paseo-plugins"
+const REPO = "tommerty/paseo-cafe"
 
 const REGISTRY_TEMPLATE = `{
   "id": "your-plugin-id",

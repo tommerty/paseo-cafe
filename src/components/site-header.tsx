@@ -32,7 +32,7 @@ export function SiteHeader() {
           </Link>
 
           <a
-            href="https://github.com/paseo-plugins/paseo-plugins"
+            href="https://github.com/tommerty/paseo-cafe"
             target="_blank"
             rel="noreferrer"
             className="hover:text-foreground"
