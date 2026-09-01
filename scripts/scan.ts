@@ -29,12 +29,16 @@ import {
   rawUrl,
   resolveGitHubAssetContentType,
 } from "./github.ts"
+import { renderOgImage } from "./og-image.tsx"
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "../src/lib/site.ts"
 
 // Scripts are always invoked via `bun run` from the repo root (see package.json).
 const ROOT = process.cwd()
 const REGISTRY_DIR = join(ROOT, "registry")
 const OUTPUT_DIR = join(ROOT, "data", "plugins")
 const INDEX_PATH = join(ROOT, "data", "plugins.json")
+const PUBLIC_DIR = join(ROOT, "public")
+const OG_DIR = join(PUBLIC_DIR, "og")
 const RECENT_DAYS = 180
 
 interface PackageJson {
@@ -208,8 +212,50 @@ async function scanOne(entryFile: string): Promise<PluginRecord> {
   }
 }
 
+/** Renders one OG image and writes it to public/og/<slug>.png. Never fails the run — a broken render just logs and moves on. */
+async function writeOgImage(
+  slug: string,
+  opts: Parameters<typeof renderOgImage>[0]
+) {
+  try {
+    const png = await renderOgImage(opts)
+    writeFileSync(join(OG_DIR, `${slug}.png`), png)
+  } catch (err) {
+    console.warn(
+      `  ! failed to render OG image for ${slug}: ${(err as Error).message}`
+    )
+  }
+}
+
+function writeSitemap(records: PluginRecord[]) {
+  const staticPages = [
+    { path: "/", changefreq: "weekly" },
+    { path: "/plugins", changefreq: "daily" },
+    { path: "/submit", changefreq: "monthly" },
+  ]
+
+  const urls = [
+    ...staticPages.map(
+      ({ path, changefreq }) =>
+        `  <url><loc>${SITE_URL}${path}</loc><changefreq>${changefreq}</changefreq></url>`
+    ),
+    ...records.map(
+      (r) =>
+        `  <url><loc>${SITE_URL}/plugins/${r.id}</loc><lastmod>${(r.repoMeta?.pushedAt ?? r.scannedAt).slice(0, 10)}</lastmod></url>`
+    ),
+  ]
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`
+  writeFileSync(join(PUBLIC_DIR, "sitemap.xml"), xml)
+  writeFileSync(
+    join(PUBLIC_DIR, "robots.txt"),
+    `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`
+  )
+}
+
 async function main() {
   mkdirSync(OUTPUT_DIR, { recursive: true })
+  mkdirSync(OG_DIR, { recursive: true })
   const files = readdirSync(REGISTRY_DIR).filter((f) => f.endsWith(".json"))
 
   const records: PluginRecord[] = []
@@ -222,14 +268,31 @@ async function main() {
       join(OUTPUT_DIR, `${record.id}.json`),
       `${JSON.stringify(record, null, 2)}\n`
     )
+    await writeOgImage(record.id, {
+      title: record.name,
+      description: record.description,
+      badges: [
+        ...record.categories,
+        ...(record.license ? [record.license] : []),
+      ],
+    })
   }
 
   records.sort((a, b) => a.name.localeCompare(b.name))
   writeFileSync(INDEX_PATH, `${JSON.stringify(records, null, 2)}\n`)
 
+  await writeOgImage("default", {
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  })
+  writeSitemap(records)
+
   const ok = records.filter((r) => !r.scanError).length
   console.log(
     `\nWrote ${records.length} record(s) (${ok} clean, ${records.length - ok} with warnings) to data/plugins.json`
+  )
+  console.log(
+    `Wrote ${records.length + 1} OG image(s), sitemap.xml, and robots.txt to public/`
   )
 }
 

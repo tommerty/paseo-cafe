@@ -1,4 +1,4 @@
-# paseo-plugins
+# paseo.cafe
 
 A directory of community-built [Paseo](https://paseo.sh) plugins. Every listing is generated
 from the plugin's own repo — authors don't fill out a form, they just point us at their code.

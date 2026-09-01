@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { IconBrandGithub, IconPuzzle } from "@tabler/icons-react"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { SITE_NAME, SITE_REPO } from "@/lib/site"
 
 export function SiteHeader() {
   const isMobile = useIsMobile()
@@ -12,7 +13,7 @@ export function SiteHeader() {
         <Link to="/" className="flex flex-col justify-center">
           <span className="flex items-center gap-2 font-medium">
             <IconPuzzle className="size-5" />
-            {!isMobile ? "paseo.cafe" : null}
+            {!isMobile ? SITE_NAME : null}
           </span>
         </Link>
         <nav className="flex items-center gap-4 text-sm text-foreground/70">
@@ -32,7 +33,7 @@ export function SiteHeader() {
           </Link>
 
           <a
-            href="https://github.com/tommerty/paseo-cafe"
+            href={`https://github.com/${SITE_REPO}`}
             target="_blank"
             rel="noreferrer"
             className="hover:text-foreground"

@@ -17,6 +17,9 @@ import { Separator } from "@/components/ui/separator"
 import { CopyCommand } from "@/components/copy-command"
 import { MediaGallery } from "@/components/media-gallery"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { SITE_NAME } from "@/lib/site"
+import { seo } from "@/lib/seo"
+import { pluginJsonLd } from "@/lib/json-ld"
 
 export const Route = createFileRoute("/plugins/$id")({
   component: PluginDetail,
@@ -26,6 +29,17 @@ export const Route = createFileRoute("/plugins/$id")({
     if (!plugin) throw notFound()
     return plugin
   },
+  head: ({ loaderData }) =>
+    loaderData
+      ? seo({
+          title: loaderData.name,
+          description:
+            loaderData.description || `${loaderData.name} — a paseo.sh plugin.`,
+          path: `/plugins/${loaderData.id}`,
+          image: `/og/${loaderData.id}.png`,
+          type: "article",
+        })
+      : {},
 })
 
 const HEALTH_LABELS: Record<keyof PluginHealth, string> = {
@@ -42,6 +56,13 @@ function PluginDetail() {
 
   return (
     <div className="flex flex-col gap-8">
+      {/* Structured data for rich search results — schema.org SoftwareApplication built from this same plugin record. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(pluginJsonLd(plugin)),
+        }}
+      />
       <Link
         to="/plugins"
         className="flex w-fit items-center gap-1 text-sm text-foreground/60 hover:text-foreground"
@@ -115,7 +136,7 @@ function PluginDetail() {
       <Alert>
         <IconAlertTriangle />
         <AlertTitle>
-          Community-submitted — not owned or vetted by paseo-plugins
+          Community-submitted — not owned or vetted by {SITE_NAME}
         </AlertTitle>
         <AlertDescription>
           This listing is generated automatically from the plugin's own public

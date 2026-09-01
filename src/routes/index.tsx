@@ -1,8 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { IconArrowRight } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site"
+import { seo } from "@/lib/seo"
 
-export const Route = createFileRoute("/")({ component: App })
+export const Route = createFileRoute("/")({
+  head: () =>
+    seo({ title: SITE_NAME, description: SITE_DESCRIPTION, path: "/" }),
+  component: App,
+})
 
 function App() {
   return (

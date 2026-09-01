@@ -17,8 +17,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { seo } from "@/lib/seo"
 
 export const Route = createFileRoute("/plugins/")({
+  head: () =>
+    seo({
+      title: "Plugins",
+      description:
+        "Browse community-built paseo.sh plugins, generated straight from each plugin's own repo.",
+      path: "/plugins",
+    }),
   component: PluginsIndex,
   loader: () => getPlugins(),
 })

@@ -1,9 +1,11 @@
+import { SITE_NAME } from "@/lib/site"
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-border/60">
       <div className="mx-auto max-w-5xl px-6 py-8 text-xs text-foreground/50">
         <p>
-          <strong className="text-foreground/70">paseo-plugins</strong> is an
+          <strong className="text-foreground/70">{SITE_NAME}</strong> is an
           independent, community-run directory. It is not affiliated with,
           endorsed by, or maintained by{" "}
           <a

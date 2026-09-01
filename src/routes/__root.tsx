@@ -12,26 +12,26 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site"
 
 export const Route = createRootRoute({
+  // Deliberately just charset/viewport/stylesheet/a bare title+description
+  // fallback here — NOT the full seo() helper. TanStack Router overrides
+  // same-keyed `meta` entries from child routes, but concatenates `links`
+  // rather than deduping them, so a canonical link here would render
+  // alongside every route's own canonical instead of being replaced by it.
+  // Every actual page route provides its own full seo() (title, OG,
+  // Twitter, canonical) — this is only what renders if one somehow doesn't.
   head: () => ({
     meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "paseo-plugins — a directory of paseo.sh plugins",
-      },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: SITE_NAME },
+      { name: "description", content: SITE_DESCRIPTION },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
     ],
   }),
   notFoundComponent: () => (

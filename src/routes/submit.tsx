@@ -8,10 +8,19 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CopyBlock } from "@/components/copy-block"
+import { SITE_REPO } from "@/lib/site"
+import { seo } from "@/lib/seo"
 
-export const Route = createFileRoute("/submit")({ component: SubmitPage })
-
-const REPO = "tommerty/paseo-cafe"
+export const Route = createFileRoute("/submit")({
+  head: () =>
+    seo({
+      title: "Submit your plugin",
+      description:
+        "Add your paseo.sh plugin to the directory with a single JSON file — no dashboard, no form.",
+      path: "/submit",
+    }),
+  component: SubmitPage,
+})
 
 const REGISTRY_TEMPLATE = `{
   "id": "your-plugin-id",
@@ -20,15 +29,15 @@ const REGISTRY_TEMPLATE = `{
   "submittedBy": "yourname"
 }`
 
-const GIT_STEPS = `git clone https://github.com/${REPO}.git
-cd paseo-plugins
+const GIT_STEPS = `git clone https://github.com/${SITE_REPO}.git
+cd ${SITE_REPO.split("/")[1]}
 $EDITOR registry/your-plugin-id.json
 git checkout -b add-your-plugin-id
 git add registry/your-plugin-id.json
 git commit -m "Add your-plugin-id"
 git push -u origin add-your-plugin-id`
 
-const createFileUrl = `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(
+const createFileUrl = `https://github.com/${SITE_REPO}/new/main?filename=${encodeURIComponent(
   "registry/your-plugin-id.json"
 )}&value=${encodeURIComponent(REGISTRY_TEMPLATE)}`
 
@@ -247,7 +256,7 @@ function SubmitPage() {
           Browse existing plugins <IconArrowRight className="size-4" />
         </Button>
         <a
-          href={`https://github.com/${REPO}`}
+          href={`https://github.com/${SITE_REPO}`}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-1 text-sm text-foreground/60 hover:text-foreground"

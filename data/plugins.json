@@ -39,7 +39,13 @@
       "updatedRecently": true
     },
     "images": [],
-    "scannedAt": "2026-09-01T13:46:17.311Z"
+    "videos": [
+      {
+        "kind": "file",
+        "url": "https://github.com/user-attachments/assets/cbb0166e-d981-4367-a5b4-5b12d2e7c14c"
+      }
+    ],
+    "scannedAt": "2026-09-01T14:50:23.447Z"
   },
   {
     "id": "subagent-activity",
@@ -82,6 +88,7 @@
     "images": [
       "https://raw.githubusercontent.com/mcowger/paseo-plugins/main/subagent-activity/images/subagent-activity.png"
     ],
-    "scannedAt": "2026-09-01T13:46:18.363Z"
+    "videos": [],
+    "scannedAt": "2026-09-01T14:50:22.671Z"
   }
 ]

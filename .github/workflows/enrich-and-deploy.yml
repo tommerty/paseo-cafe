@@ -40,7 +40,7 @@ jobs:
 
       - name: Commit refreshed data
         run: |
-          git config user.name "paseo-plugins-bot"
+          git config user.name "paseo-cafe-bot"
           git config user.email "actions@github.com"
           git add data/
           git diff --cached --quiet || git commit -m "chore: refresh plugin data [skip ci]"
