@@ -8,10 +8,10 @@ name: Enrich and deploy
 # The actual GitHub Pages deploy step is intentionally left for later —
 # see the TODO at the bottom of this file.
 on:
-  push:
-    branches: [main]
-  schedule:
-    - cron: "17 3 * * *" # nightly re-scan, off the hour to dodge GH Actions load spikes
+  # push:
+  #   branches: [main]
+  # schedule:
+  #   - cron: "17 3 * * *"
   workflow_dispatch: {}
 
 permissions:
