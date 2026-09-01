@@ -1,0 +1,261 @@
+import { createFileRoute, Link } from "@tanstack/react-router"
+import {
+  IconArrowRight,
+  IconBrandGithub,
+  IconCheck,
+  IconExternalLink,
+} from "@tabler/icons-react"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { CopyBlock } from "@/components/copy-block"
+
+export const Route = createFileRoute("/submit")({ component: SubmitPage })
+
+const REPO = "paseo-plugins/paseo-plugins"
+
+const REGISTRY_TEMPLATE = `{
+  "id": "your-plugin-id",
+  "repo": "yourname/your-repo",
+  "categories": ["productivity"],
+  "submittedBy": "yourname"
+}`
+
+const GIT_STEPS = `git clone https://github.com/${REPO}.git
+cd paseo-plugins
+$EDITOR registry/your-plugin-id.json
+git checkout -b add-your-plugin-id
+git add registry/your-plugin-id.json
+git commit -m "Add your-plugin-id"
+git push -u origin add-your-plugin-id`
+
+const createFileUrl = `https://github.com/${REPO}/new/main?filename=${encodeURIComponent(
+  "registry/your-plugin-id.json"
+)}&value=${encodeURIComponent(REGISTRY_TEMPLATE)}`
+
+const FIELDS: { field: string; required: boolean; description: string }[] = [
+  {
+    field: "id",
+    required: true,
+    description:
+      "Kebab-case slug. Must match the filename: registry/<id>.json.",
+  },
+  {
+    field: "repo",
+    required: true,
+    description: `GitHub "owner/repo" — just the repo, not a full URL.`,
+  },
+  {
+    field: "path",
+    required: false,
+    description:
+      "Subpath within the repo, only if it hosts more than one plugin. Omit otherwise.",
+  },
+  {
+    field: "categories",
+    required: false,
+    description: 'Free-form tags, e.g. ["productivity", "monitoring"].',
+  },
+  {
+    field: "submittedBy",
+    required: false,
+    description: "Your GitHub username, for attribution.",
+  },
+]
+
+const REQUIRED_CHECKS = [
+  "Your repo is public on GitHub.",
+  "It contains a paseo-plugin.json manifest (at the repo root, or at path for a monorepo) with a string id field.",
+]
+
+const RECOMMENDED = [
+  "A README with an Install, Installation, Setup, or Getting started section — we pull it into your listing verbatim.",
+  "A LICENSE file.",
+  "An images/ folder with one or more screenshots.",
+  "A demo video — a YouTube or Loom link, or a video dropped directly into the README — gets auto-embedded.",
+  "npm test and npm run typecheck scripts in package.json.",
+]
+
+const AUTO_GENERATED = [
+  "Name, description, version, author, and license — from package.json, paseo-plugin.json, and the README.",
+  "The exact install command (paseo plugin add ...), derived from repo + path.",
+  "Screenshots, from an images/ folder in your repo.",
+  "Demo videos, detected in your README (YouTube, Loom, or an uploaded GitHub video).",
+  "Star count, last-updated date, and license, from the GitHub API.",
+  "Health badges: manifest validity, README/license/tests presence, and recency.",
+]
+
+function SubmitPage() {
+  return (
+    <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">
+          Submit your plugin
+        </h1>
+        <p className="max-w-2xl text-foreground/70">
+          Every listing on this site is generated from your plugin's own repo.
+          Submitting one is a single JSON file — no dashboard, no form, no other
+          build step.
+        </p>
+      </div>
+
+      <Separator className="my-8" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          1. Before you submit
+        </h2>
+        <div>
+          <p className="mb-2 text-sm font-medium text-foreground/60">
+            Required
+          </p>
+          <ul className="flex flex-col gap-2">
+            {REQUIRED_CHECKS.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm">
+                <IconCheck className="mt-0.5 size-4 shrink-0 text-green-600" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="mb-2 text-sm font-medium text-foreground/60">
+            Recommended — not required to get in, but makes your listing much
+            better
+          </p>
+          <ul className="flex flex-col gap-2">
+            {RECOMMENDED.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2 text-sm text-foreground/70"
+              >
+                <IconCheck className="mt-0.5 size-4 shrink-0 text-foreground/30" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <Separator className="my-8" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          2. Add a registry entry
+        </h2>
+        <p className="text-sm text-foreground/70">
+          Add one file,{" "}
+          <code className="text-foreground">registry/your-plugin-id.json</code>.
+          This is the entire submission — everything else is read from your repo
+          automatically.
+        </p>
+        <CopyBlock
+          code={REGISTRY_TEMPLATE}
+          label="registry/your-plugin-id.json"
+        />
+
+        <dl className="mt-2 flex flex-col gap-3">
+          {FIELDS.map(({ field, required, description }) => (
+            <div
+              key={field}
+              className="grid grid-cols-[8rem_1fr] gap-3 text-sm"
+            >
+              <dt className="flex flex-col font-mono text-foreground">
+                <span>{field}</span>
+                {!required ? (
+                  <span className="text-xs text-foreground/40">optional</span>
+                ) : null}
+              </dt>
+              <dd className="text-foreground/70">{description}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <Separator className="my-8" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          3. Open a pull request
+        </h2>
+        <p className="text-sm text-foreground/70">
+          Quickest: create the file directly on GitHub, prefilled.
+        </p>
+        <Button
+          nativeButton={false}
+          className="w-fit"
+          render={<a href={createFileUrl} target="_blank" rel="noreferrer" />}
+        >
+          <IconBrandGithub className="size-4" /> Create your registry file on
+          GitHub
+          <IconExternalLink className="size-3.5" />
+        </Button>
+        <p className="mt-2 text-sm text-foreground/70">
+          Or, from the command line:
+        </p>
+        <CopyBlock code={GIT_STEPS} />
+      </section>
+
+      <Separator className="my-8" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          4. What happens next
+        </h2>
+        <ol className="flex flex-col gap-3 text-sm text-foreground/70">
+          <li>
+            <strong className="text-foreground">On open:</strong> a check runs
+            automatically, confirming your repo/path exists and has a valid
+            manifest. A green check means it's ready to merge — that's the whole
+            review.
+          </li>
+          <li>
+            <strong className="text-foreground">On merge:</strong> your full
+            listing gets generated — name, description, install command,
+            screenshots, video, health badges — straight from your repo.
+          </li>
+          <li>
+            <strong className="text-foreground">Every night:</strong> everything
+            gets re-scanned, so stars, last-updated, and broken-repo detection
+            stay current even without a new PR.
+          </li>
+        </ol>
+      </section>
+
+      <Separator className="my-8" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          What you don't need to write
+        </h2>
+        <ul className="flex flex-col gap-2">
+          {AUTO_GENERATED.map((item) => (
+            <li
+              key={item}
+              className="flex items-start gap-2 text-sm text-foreground/70"
+            >
+              <IconCheck className="mt-0.5 size-4 shrink-0 text-green-600" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <Separator className="my-8" />
+
+      <div className="flex flex-wrap items-center gap-4">
+        <Button nativeButton={false} render={<Link to="/plugins" />}>
+          Browse existing plugins <IconArrowRight className="size-4" />
+        </Button>
+        <a
+          href={`https://github.com/${REPO}`}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1 text-sm text-foreground/60 hover:text-foreground"
+        >
+          <IconBrandGithub className="size-4" /> Read the source
+          <IconExternalLink className="size-3.5" />
+        </a>
+      </div>
+    </div>
+  )
+}

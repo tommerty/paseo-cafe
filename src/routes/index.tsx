@@ -25,9 +25,7 @@ function App() {
         <Button
           nativeButton={false}
           variant="outline"
-          render={
-            <a href="https://github.com/paseo-plugins/paseo-plugins/blob/main/README.md#submitting-a-plugin" />
-          }
+          render={<Link to="/submit" />}
         >
           Submit your plugin
         </Button>

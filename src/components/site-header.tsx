@@ -1,14 +1,17 @@
 import { Link } from "@tanstack/react-router"
 import { IconBrandGithub, IconPuzzle } from "@tabler/icons-react"
 import { ModeToggle } from "@/components/mode-toggle"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function SiteHeader() {
+  const isMobile = useIsMobile()
+
   return (
     <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-4">
         <Link to="/" className="flex items-center gap-2 font-medium">
           <IconPuzzle className="size-5" />
-          <span>paseo-plugins</span>
+          {!isMobile ? <span>paseo-plugins</span> : null}
         </Link>
         <nav className="flex items-center gap-4 text-sm text-foreground/70">
           <Link
@@ -16,16 +19,25 @@ export function SiteHeader() {
             className="hover:text-foreground"
             activeProps={{ className: "text-foreground" }}
           >
-            Browse plugins
+            {isMobile ? "Browse" : "Browse plugins"}
           </Link>
-          <a
-            href="https://paseo.sh"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            to="/submit"
             className="hover:text-foreground"
+            activeProps={{ className: "text-foreground" }}
           >
-            paseo.sh
-          </a>
+            {isMobile ? "Submit" : "Submit a plugin"}
+          </Link>
+          {!isMobile ? (
+            <a
+              href="https://paseo.sh"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-foreground"
+            >
+              paseo.sh
+            </a>
+          ) : null}
           <a
             href="https://github.com/paseo-plugins/paseo-plugins"
             target="_blank"

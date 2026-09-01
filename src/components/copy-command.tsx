@@ -1,15 +1,9 @@
-import { useState } from "react"
 import { IconCheck, IconCopy } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 
 export function CopyCommand({ command }: { command: string }) {
-  const [copied, setCopied] = useState(false)
-
-  async function handleCopy() {
-    await navigator.clipboard.writeText(command)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
+  const { copied, copy } = useCopyToClipboard()
 
   return (
     <div className="flex items-center justify-between gap-3 border border-border bg-muted px-4 py-3">
@@ -18,7 +12,7 @@ export function CopyCommand({ command }: { command: string }) {
         variant="outline"
         size="icon-sm"
         className="shrink-0"
-        onClick={handleCopy}
+        onClick={() => copy(command)}
         aria-label="Copy install command"
       >
         {copied ? (
