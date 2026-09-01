@@ -1,6 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { useMemo, useState } from "react"
-import { IconPhotoOff, IconSearch, IconStar } from "@tabler/icons-react"
+import {
+  IconPhotoOff,
+  IconPlayerPlayFilled,
+  IconSearch,
+  IconStar,
+} from "@tabler/icons-react"
 import { getPlugins } from "@/lib/plugins-data"
 import type { PluginRecord } from "@/lib/plugin-schema"
 import { Badge } from "@/components/ui/badge"
@@ -97,7 +102,7 @@ function PluginCard({ plugin }: { plugin: PluginRecord }) {
   return (
     <Link to="/plugins/$id" params={{ id: plugin.id }} className="block">
       <Card className="h-full pt-0 transition-shadow hover:shadow-md">
-        <div className="aspect-video w-full shrink-0 overflow-hidden border-b border-border bg-muted">
+        <div className="relative aspect-video w-full shrink-0 overflow-hidden border-b border-border bg-muted">
           {plugin.images[0] ? (
             <img
               src={plugin.images[0]}
@@ -110,6 +115,14 @@ function PluginCard({ plugin }: { plugin: PluginRecord }) {
               <IconPhotoOff className="size-6 text-foreground/20" />
             </div>
           )}
+          {plugin.videos.length > 0 ? (
+            <div
+              className="absolute inset-0 flex items-center justify-center bg-black/20"
+              aria-label="Has a demo video"
+            >
+              <IconPlayerPlayFilled className="size-8 text-white drop-shadow" />
+            </div>
+          ) : null}
         </div>
         <CardHeader>
           <div className="flex items-center justify-between gap-2">

@@ -25,6 +25,13 @@ export const pluginRepoMetaSchema = z.object({
   license: z.string().nullable().default(null),
 })
 
+/** The GitHub account that owns the plugin's repo — the one reliable "who made this" we always have. */
+export const pluginOwnerSchema = z.object({
+  login: z.string(),
+  avatarUrl: z.string().url(),
+  url: z.string().url(),
+})
+
 /**
  * A demo video found by best-effort scanning of the README (see
  * src/lib/videos.ts). URLs are always constructed from a matched, sanitized
@@ -32,8 +39,17 @@ export const pluginRepoMetaSchema = z.object({
  * pattern) — never rendered from arbitrary README text directly.
  */
 export const videoEmbedSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("youtube"), id: z.string(), embedUrl: z.string().url(), watchUrl: z.string().url() }),
-  z.object({ kind: z.literal("loom"), id: z.string(), embedUrl: z.string().url() }),
+  z.object({
+    kind: z.literal("youtube"),
+    id: z.string(),
+    embedUrl: z.string().url(),
+    watchUrl: z.string().url(),
+  }),
+  z.object({
+    kind: z.literal("loom"),
+    id: z.string(),
+    embedUrl: z.string().url(),
+  }),
   z.object({ kind: z.literal("file"), url: z.string().url() }),
 ])
 
@@ -50,6 +66,7 @@ export const pluginRecordSchema = z.object({
   categories: z.array(z.string()).default([]),
   manifest: z.record(z.string(), z.json()).optional(),
   repoMeta: pluginRepoMetaSchema.optional(),
+  owner: pluginOwnerSchema.optional(),
   // Best-effort excerpt of an "Install"/"Setup"/"Getting started" README
   // section — supplementary to the always-correct generated install
   // command (see src/lib/install-command.ts), for anything extra the
@@ -60,10 +77,13 @@ export const pluginRecordSchema = z.object({
   installNotesHtml: z.string().optional(),
   health: pluginHealthSchema,
   images: z.array(z.string()).default([]),
+  videos: z.array(videoEmbedSchema).default([]),
   scanError: z.string().optional(),
   scannedAt: z.string(),
 })
 
 export type PluginHealth = z.infer<typeof pluginHealthSchema>
 export type PluginRepoMeta = z.infer<typeof pluginRepoMetaSchema>
+export type PluginOwner = z.infer<typeof pluginOwnerSchema>
+export type VideoEmbed = z.infer<typeof videoEmbedSchema>
 export type PluginRecord = z.infer<typeof pluginRecordSchema>

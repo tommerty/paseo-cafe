@@ -19,6 +19,7 @@ import { pluginRecordSchema } from "../src/lib/plugin-schema.ts"
 import type { PluginRecord } from "../src/lib/plugin-schema.ts"
 import { extractInstallSection, firstParagraph } from "../src/lib/readme.ts"
 import { renderMarkdownToHtml } from "../src/lib/markdown.ts"
+import { extractVideos, resolveGitHubAssetVideos } from "../src/lib/videos.ts"
 import {
   GitHubNotFoundError,
   fetchRawJson,
@@ -26,6 +27,7 @@ import {
   fetchRepoMeta,
   listDir,
   rawUrl,
+  resolveGitHubAssetContentType,
 } from "./github.ts"
 
 // Scripts are always invoked via `bun run` from the repo root (see package.json).
@@ -80,6 +82,7 @@ async function scanOne(entryFile: string): Promise<PluginRecord> {
       updatedRecently: false,
     },
     images: [],
+    videos: [],
     scannedAt,
   }
 
@@ -129,6 +132,16 @@ async function scanOne(entryFile: string): Promise<PluginRecord> {
       ? await renderMarkdownToHtml(installNotes)
       : undefined
 
+    const readmeVideos = extractVideos(readme ?? "")
+    const assetVideos = readme
+      ? await resolveGitHubAssetVideos(
+          readme,
+          resolveGitHubAssetContentType,
+          readmeVideos
+        )
+      : []
+    const videos = [...readmeVideos, ...assetVideos]
+
     const record: PluginRecord = {
       id: entry.id,
       repo: entry.repo,
@@ -150,6 +163,11 @@ async function scanOne(entryFile: string): Promise<PluginRecord> {
       manifest: (manifest as PluginRecord["manifest"]) ?? undefined,
       installNotes,
       installNotesHtml,
+      owner: {
+        login: repoMeta.owner.login,
+        avatarUrl: repoMeta.owner.avatar_url,
+        url: repoMeta.owner.html_url,
+      },
       repoMeta: {
         stars: repoMeta.stargazers_count,
         openIssues: repoMeta.open_issues_count,
@@ -172,6 +190,7 @@ async function scanOne(entryFile: string): Promise<PluginRecord> {
       images: images
         .filter((e) => e.type === "file")
         .map((e) => rawUrl(owner, repo, branch, e.path)),
+      videos,
       scannedAt,
     }
 

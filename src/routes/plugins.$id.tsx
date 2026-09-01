@@ -15,6 +15,7 @@ import { formatDate, formatDateTime } from "@/lib/format-date"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CopyCommand } from "@/components/copy-command"
+import { MediaGallery } from "@/components/media-gallery"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export const Route = createFileRoute("/plugins/$id")({
@@ -53,9 +54,26 @@ function PluginDetail() {
           <h1 className="text-3xl font-semibold tracking-tight">
             {plugin.name}
           </h1>
-          {plugin.version ? (
-            <Badge variant="outline">v{plugin.version}</Badge>
-          ) : null}
+          <a
+            href={
+              plugin.owner?.url ??
+              `https://github.com/${plugin.repo.split("/")[0]}`
+            }
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-foreground/60 hover:text-foreground"
+          >
+            {plugin.owner ? (
+              <img
+                src={plugin.owner.avatarUrl}
+                alt=""
+                className="size-5 rounded-full ring-1 ring-foreground/10"
+              />
+            ) : (
+              <IconBrandGithub className="size-4" />
+            )}
+            by {plugin.owner?.login ?? plugin.repo.split("/")[0]}
+          </a>
           {plugin.scanError ? (
             <Badge variant="destructive">needs attention</Badge>
           ) : null}
@@ -70,6 +88,28 @@ function PluginDetail() {
             </Badge>
           ))}
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/60">
+        {plugin.repoMeta ? (
+          <span className="flex items-center gap-1">
+            <IconStar className="size-4" /> {plugin.repoMeta.stars} stars
+          </span>
+        ) : null}
+        {plugin.license ? <span>License: {plugin.license}</span> : null}
+        {plugin.author ? <span>By {plugin.author}</span> : null}
+        {plugin.repoMeta ? (
+          <span>Last updated {formatDate(plugin.repoMeta.pushedAt)}</span>
+        ) : null}
+        <a
+          href={plugin.url}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1 text-foreground hover:underline"
+        >
+          <IconBrandGithub className="size-4" /> {plugin.repo}
+          <IconExternalLink className="size-3.5" />
+        </a>
       </div>
 
       <Alert>
@@ -96,6 +136,8 @@ function PluginDetail() {
         </div>
       ) : null}
 
+      <MediaGallery plugin={plugin} />
+
       <div>
         <h2 className="mb-2 text-sm font-medium text-foreground/60">Install</h2>
         <CopyCommand command={getInstallCommand(plugin)} />
@@ -114,41 +156,6 @@ function PluginDetail() {
           </div>
         ) : null}
       </div>
-
-      <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/60">
-        {plugin.repoMeta ? (
-          <span className="flex items-center gap-1">
-            <IconStar className="size-4" /> {plugin.repoMeta.stars} stars
-          </span>
-        ) : null}
-        {plugin.license ? <span>License: {plugin.license}</span> : null}
-        {plugin.author ? <span>By {plugin.author}</span> : null}
-        {plugin.repoMeta ? (
-          <span>Last updated {formatDate(plugin.repoMeta.pushedAt)}</span>
-        ) : null}
-        <a
-          href={plugin.url}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-1 text-foreground hover:underline"
-        >
-          <IconBrandGithub className="size-4" /> {plugin.repo}
-          <IconExternalLink className="size-3.5" />
-        </a>
-      </div>
-
-      {plugin.images.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {plugin.images.map((src) => (
-            <img
-              key={src}
-              src={src}
-              alt={`${plugin.name} screenshot`}
-              className="w-full rounded-none ring-1 ring-foreground/10"
-            />
-          ))}
-        </div>
-      ) : null}
 
       <Separator />
 

@@ -44,6 +44,7 @@ export interface RepoMeta {
   topics: string[]
   license: { spdx_id: string } | null
   html_url: string
+  owner: { login: string; avatar_url: string; html_url: string }
 }
 
 export function fetchRepoMeta(owner: string, repo: string): Promise<RepoMeta> {
@@ -99,4 +100,28 @@ export async function fetchRawJson<T>(
   const text = await fetchRawText(owner, repo, ref, path)
   if (text === null) return null
   return JSON.parse(text) as T
+}
+
+/**
+ * Resolves the real MIME type behind a GitHub user-content asset URL
+ * (e.g. github.com/user-attachments/assets/<uuid>), which carries no file
+ * extension, so images and videos are indistinguishable by URL alone.
+ * GitHub 302s these to a presigned S3 URL whose `response-content-type`
+ * query param carries the real type — read straight off the redirect's
+ * Location header without following it, so this costs one small request.
+ */
+export async function resolveGitHubAssetContentType(
+  url: string
+): Promise<string | null> {
+  try {
+    const res = await fetch(url, { method: "HEAD", redirect: "manual" })
+    const location = res.headers.get("location")
+    if (location) {
+      const type = new URL(location).searchParams.get("response-content-type")
+      if (type) return type
+    }
+    return res.headers.get("content-type")
+  } catch {
+    return null
+  }
 }
