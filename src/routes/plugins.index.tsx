@@ -52,8 +52,9 @@ function PluginsIndex() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Plugins</h1>
         <p className="text-sm text-foreground/60">
-          {plugins.length} plugin{plugins.length === 1 ? "" : "s"} generated
-          from their source repos.
+          {query || category
+            ? `${filtered.length} of ${plugins.length} plugin${plugins.length === 1 ? "" : "s"} found.`
+            : `${plugins.length} plugin${plugins.length === 1 ? "" : "s"} generated from their source repos.`}
         </p>
       </div>
 
@@ -137,6 +138,16 @@ function PluginCard({ plugin }: { plugin: PluginRecord }) {
           <CardDescription className="line-clamp-3">
             {plugin.description || "No description available."}
           </CardDescription>
+          {plugin.owner ? (
+            <div className="flex items-center gap-1.5 text-xs text-foreground/50">
+              <img
+                src={plugin.owner.avatarUrl}
+                alt=""
+                className="size-4 rounded-full"
+              />
+              {plugin.owner.login}
+            </div>
+          ) : null}
         </CardHeader>
         <CardContent className="flex flex-wrap gap-1.5">
           {plugin.categories.map((c) => (

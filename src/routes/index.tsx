@@ -7,6 +7,10 @@ export const Route = createFileRoute("/")({ component: App })
 function App() {
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-20 text-center">
+      <div className="mx-auto flex items-center gap-1.5 text-xs text-foreground/50">
+        <span className="size-1.5 rounded-full bg-primary" />
+        Community-run, unofficial directory
+      </div>
       <h1 className="text-4xl font-semibold tracking-tight">
         A directory of paseo.sh plugins
       </h1>

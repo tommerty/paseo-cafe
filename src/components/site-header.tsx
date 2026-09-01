@@ -9,9 +9,11 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 font-medium">
-          <IconPuzzle className="size-5" />
-          {!isMobile ? <span>paseo-plugins</span> : null}
+        <Link to="/" className="flex flex-col justify-center">
+          <span className="flex items-center gap-2 font-medium">
+            <IconPuzzle className="size-5" />
+            {!isMobile ? "paseo.cafe" : null}
+          </span>
         </Link>
         <nav className="flex items-center gap-4 text-sm text-foreground/70">
           <Link
@@ -19,25 +21,16 @@ export function SiteHeader() {
             className="hover:text-foreground"
             activeProps={{ className: "text-foreground" }}
           >
-            {isMobile ? "Browse" : "Browse plugins"}
+            Browse
           </Link>
           <Link
             to="/submit"
             className="hover:text-foreground"
             activeProps={{ className: "text-foreground" }}
           >
-            {isMobile ? "Submit" : "Submit a plugin"}
+            Submit
           </Link>
-          {!isMobile ? (
-            <a
-              href="https://paseo.sh"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-foreground"
-            >
-              paseo.sh
-            </a>
-          ) : null}
+
           <a
             href="https://github.com/paseo-plugins/paseo-plugins"
             target="_blank"
