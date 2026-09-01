@@ -34,7 +34,7 @@
       "updatedRecently": true
     },
     "images": [],
-    "scannedAt": "2026-09-01T13:29:51.189Z"
+    "scannedAt": "2026-09-01T13:46:17.311Z"
   },
   {
     "id": "subagent-activity",
@@ -72,6 +72,6 @@
     "images": [
       "https://raw.githubusercontent.com/mcowger/paseo-plugins/main/subagent-activity/images/subagent-activity.png"
     ],
-    "scannedAt": "2026-09-01T13:29:50.317Z"
+    "scannedAt": "2026-09-01T13:46:18.363Z"
   }
 ]
