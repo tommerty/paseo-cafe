@@ -1,0 +1,10 @@
+{
+  "repo": "omercnet/paseo-plugins",
+  "path": "paseo-omp",
+  "categories": ["provider", "productivity", "orchestration"],
+  "caveats": [
+    "Alpha: requires Paseo 0.8.x, OMP 18.1.15+, and OMP RPC protocol v2.",
+    "Preview upgrades may require re-importing sessions created by an earlier version."
+  ],
+  "submittedBy": "omercnet"
+}
