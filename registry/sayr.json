@@ -1,0 +1,7 @@
+{
+  "repo": "dorasto/sayr",
+  "categories": ["productivity"],
+  "path": "packages/paseo-plugin",
+  "caveats":["Requires an account on Sayr.io","Requires the Sayr CLI to be authenticated"],
+  "submittedBy": "tommerty"
+}
